@@ -4,7 +4,7 @@ services:
   conductor-server:
     environment:
       - CONFIG_PROP=config-redis.properties
-      - JAVA_OPTS=-Dpolyglot.engine.WarnInterpreterOnly=false
+      - JAVA_OPTS=-Dpolyglot.engine.WarnInterpreterOnly=false -DloadSample=false
     image: conductor:server
     container_name: conductor-server
     build:
@@ -16,6 +16,7 @@ services:
       - internal
     ports:
       - 8080:8080
+      - 8090:8090
       - 8127:5000
     healthcheck:
       test: ["CMD", "curl","-I" ,"-XGET", "http://localhost:8080/health"]
@@ -69,6 +70,14 @@ services:
       options:
         max-size: "1k"
         max-file: "3"
+
+  redisinsight:
+    image: redis/redisinsight:2.42
+    container_name: redisinsight
+    networks:
+      - internal
+    ports:
+      - "5540:5540"
 
 volumes:
   esdata-conductor:
